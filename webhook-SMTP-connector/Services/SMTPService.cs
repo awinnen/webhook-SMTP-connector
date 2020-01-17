@@ -31,14 +31,7 @@ namespace webhook_SMTP_connector.Services
 					Body = model.Body,
 					IsBodyHtml = true
 				};
-				try
-				{
-					smtpClient.Send(message);
-				}
-				catch (Exception e)
-				{
-					throw;
-				}
+				await smtpClient.SendMailAsync(message);
 			}
 		}
 	}
