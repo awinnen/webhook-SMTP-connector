@@ -29,8 +29,13 @@ namespace webhook_SMTP_connector.Services
 				{
 					Subject = model.Subject,
 					Body = model.Body,
-					IsBodyHtml = true
+					IsBodyHtml = true,
 				};
+				if (model.ReplyTo != null)
+				{
+					message.ReplyToList.Clear();
+					message.ReplyToList.Add(new MailAddress(model.ReplyTo.EmailAddress, model.ReplyTo.Name));
+				}
 				await smtpClient.SendMailAsync(message);
 			}
 		}

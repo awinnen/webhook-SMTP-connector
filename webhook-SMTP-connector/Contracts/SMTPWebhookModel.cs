@@ -11,5 +11,6 @@ namespace webhook_SMTP_connector.Contracts
 		public string Body { get; set; }
 		public EmailParticipant To { get; set; }
 		public EmailParticipant From { get; set; }
+		public EmailParticipant ReplyTo { get; set; }
 	}
 }
