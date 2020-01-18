@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('build') {
 			steps {
-				sh 'docker build -t awinnen/webhook-smtp-connector:${GIT_REVISION,length=6} .'
+				sh "docker build -t awinnen/webhook-smtp-connector:${GIT_REVISION,length=6} ."
 			}
         }
 		stage('deploy') {
