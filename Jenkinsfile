@@ -1,9 +1,9 @@
 pipeline {
     agent any
-	
-	environment {
-		GIT_COMMIT_SHORT = "${GIT_COMMIT[0..7]}"
-	}
+
+	  environment {
+		  GIT_COMMIT_SHORT = "${GIT_COMMIT[0..7]}"
+	  }
 	
     stages {
         stage('build') {
