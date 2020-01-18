@@ -27,6 +27,10 @@ namespace webhook_SMTP_connector.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Post([FromQuery] string secret, [FromBody] SMTPWebhookModel model)
 		{
+			if(string.IsNullOrWhiteSpace(secret))
+			{
+				return BadRequest("Queryparameter secret is required");
+			}
 			try
 			{
 				await _emailSender.SendEmail(model, await _smtpConfigProvider.GetConfig(secret));
