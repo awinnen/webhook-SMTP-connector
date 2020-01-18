@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('build') {
 			steps {
-				sh "docker build -t awinnen/webhook-smtp-connector:$GIT_COMMIT_SHORT ."
+				sh "docker build -t awinnen/webhook-smtp-connector:$GIT_COMMIT_SHORT ./webhook-SMTP-connector"
 			}
         }
 		stage('deploy') {
