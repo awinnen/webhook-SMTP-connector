@@ -2,7 +2,7 @@ pipeline {
     agent any
 	
 	environment {
-		GIT_COMMIT_SHORT = "${GIT_REVISION[0..6]}"
+		GIT_COMMIT_SHORT = "${GIT_COMMIT[0..7]}"
 	}
 	
     stages {
