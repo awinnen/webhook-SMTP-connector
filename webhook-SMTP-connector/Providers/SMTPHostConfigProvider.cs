@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,8 +11,10 @@ namespace webhook_SMTP_connector.Providers
 	{
 		private readonly Dictionary<string, SMTPHostConfig> _hosts;
 
-		public SMTPHostConfigProvider(IEnumerable<SMTPHost> hosts)
+		public SMTPHostConfigProvider(IConfiguration configuration)
 		{
+			var hosts = new List<SMTPHost>();
+			configuration.Bind("SMTPHosts", hosts);
 			_hosts = hosts.ToDictionary(x => x.Secret, x => x.Config);
 		}
 

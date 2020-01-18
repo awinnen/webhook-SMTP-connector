@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Text.Json;
 using System.Threading.Tasks;
 using webhook_SMTP_connector.Contracts;
 
@@ -10,9 +12,11 @@ namespace webhook_SMTP_connector.Services
 {
 	public class SMTPService : IEmailSender
 	{
-		public SMTPService()
-		{
+		private readonly ILogger<SMTPService> _logger;
 
+		public SMTPService(ILogger<SMTPService> logger)
+		{
+			_logger = logger;
 		}
 
 		public async Task SendEmail(SMTPWebhookModel model, SMTPHostConfig smtpConfig)
@@ -36,7 +40,12 @@ namespace webhook_SMTP_connector.Services
 					message.ReplyToList.Clear();
 					message.ReplyToList.Add(new MailAddress(model.ReplyTo.EmailAddress, model.ReplyTo.Name));
 				}
+				_logger.LogDebug("Attempting to send Email:\n{mail}", JsonSerializer.Serialize(model, new JsonSerializerOptions
+				{
+					WriteIndented = true,
+				}));
 				await smtpClient.SendMailAsync(message);
+				_logger.LogInformation("Sent Email '{subject}' to {receipients}", message.Subject, string.Join(", ", message.To.Select(t => t.Address)));
 			}
 		}
 	}
