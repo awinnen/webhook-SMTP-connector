@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -28,13 +30,22 @@ namespace webhook_SMTP_connector
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddScoped<IEmailSender, SMTPService>();
-			services.AddScoped<ISMTPHostConfigProvider>((context) => {
-				var config = new List<SMTPHost>();
-				Configuration.Bind("SMTPHosts", config);
-				return new SMTPHostConfigProvider(config);
+			services.AddControllers().AddFluentValidation(opt => {
+				opt.RegisterValidatorsFromAssemblyContaining<SMTPWebhookModelValidator>();
+				opt.ImplicitlyValidateChildProperties = true;
+				opt.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
 			});
-			services.AddControllers();
+
+			services.AddScoped<IEmailSender, SMTPService>();
+			services.AddScoped<ISMTPHostConfigProvider, SMTPHostConfigProvider>();
+
+			services.Configure<ForwardedHeadersOptions>(options =>
+			{
+				options.KnownProxies.Clear();
+				options.KnownNetworks.Clear();
+				options.ForwardedHeaders =
+					ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
